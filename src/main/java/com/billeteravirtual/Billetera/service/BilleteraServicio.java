@@ -91,6 +91,26 @@ public class BilleteraServicio {
         transaccionRepository.save(new Transferencia(null, monto, LocalDateTime.now(), cuentaOrigen, cuentaDestino));
     }
 
+    @Transactional
+    public Cuenta extraer(String cvu, BigDecimal monto){
+        if (monto.compareTo(BigDecimal.ZERO) <= 0){
+            throw new OperacionInvalidaException("El monto a extraer debe ser mayor a $0.");
+        }
+
+        Cuenta cuenta = buscarCuentaPorCvu(cvu);
+
+        if(cuenta.getSaldo().compareTo(monto) < 0){
+            throw new SaldoInsuficienteException("Saldo insuficiente para realizar la extraccion.");
+        }
+
+        cuenta.setSaldo(cuenta.getSaldo().subtract(monto));
+        cuentaRepository.save(cuenta);
+
+        transaccionRepository.save(new Extraccion(null, monto, LocalDateTime.now(), cuenta));
+
+        return cuenta;
+    }
+
     public List<Transaccion> consultarHistorial(String cvu) {
         buscarCuentaPorCvu(cvu);
 
