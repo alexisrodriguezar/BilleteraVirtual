@@ -91,6 +91,6 @@ public class BilleteraServicio {
 
     public List<Transaccion> consultarHistorial(String cvu) {
         buscarCuentaPorCvu(cvu);
-        return transaccionRepository.findByCuenta_Cvu(cvu);
+        return transaccionRepository.findHistorialByCvu(cvu);
     }
 }
