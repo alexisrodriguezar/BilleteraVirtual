@@ -8,6 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -91,6 +93,11 @@ public class BilleteraServicio {
 
     public List<Transaccion> consultarHistorial(String cvu) {
         buscarCuentaPorCvu(cvu);
-        return transaccionRepository.findHistorialByCvu(cvu);
+
+        List<Transaccion> historial = new ArrayList<>(transaccionRepository.findByCuenta_Cvu(cvu));
+        historial.addAll(transaccionRepository.findTransferenciasRecibidas(cvu));
+        historial.sort(Comparator.comparing(Transaccion::getFecha).reversed());
+
+        return historial;
     }
 }
