@@ -20,6 +20,7 @@ public class Cuenta {
     @JoinColumn (name = "usuario_id")
     private Usuario usuario;
 
+    @OneToMany(mappedBy = "cuenta", cascade = CascadeType.ALL)
     private List<Transaccion> historial;
 
     public Cuenta() {
